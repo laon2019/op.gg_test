@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getUserInfo } from "../redux/actions/userAction";
 import { useDispatch, useSelector } from "react-redux";
-import { InputGroup, FormControl, Button, Container, Image } from "react-bootstrap";
+import { InputGroup, FormControl, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getSummoners } from "../redux/actions/userAction";
 
 const Home = () => {
   const dispatch = useDispatch();

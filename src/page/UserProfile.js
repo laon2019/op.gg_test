@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import UserInfo from "../component/UserInfo";
 import { Card, ListGroup, Row, Col, Button } from "react-bootstrap";
 import GameInfo from "../component/GameInfo";
-import { getAdditionalMatchDetails } from "../redux/actions/userAction";
+import {
+  getAdditionalMatchDetails,
+  userActions,
+} from "../redux/actions/userAction"; // Import getAdditionalMatchDetails and userActions
 
 const UserProfile = () => {
-  const [start, setStart] = useState(13); // Initial value of start
-  const [count, setCount] = useState(16); // Initial value of start
+  const [start, setStart] = useState(12);
 
   const dispatch = useDispatch();
-
   const userInfo = useSelector((state) => state.user.userInfo);
   const leagueInfo = useSelector((state) => state.user.leagueInfo);
   const matchInfo = useSelector((state) => state.user.matchInfo);
@@ -26,15 +27,14 @@ const UserProfile = () => {
   }, [spellsInfo]);
 
   const handleLoadMore = () => {
+    dispatch(
+      getAdditionalMatchDetails({
+        userPuuid: userInfo.puuid,
+        start: start,
+      })
+    );
     setStart((prevStart) => prevStart + 4);
-    setCount((prevCount) => prevCount + 4);
   };
-
-  useEffect(() => {
-    if (start > 13 || count > 16) {
-      dispatch(getAdditionalMatchDetails({ userPuuid: userInfo?.puuid, start, count }));
-    }
-  }, [dispatch, count]);
 
   return (
     <div style={{ padding: "20px 0px", backgroundColor: "#EBEEF1" }}>

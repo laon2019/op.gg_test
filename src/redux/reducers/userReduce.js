@@ -5,7 +5,7 @@ let initialState = {
   userInfo: {},
   leagueInfo: {},
   matchInfo: {},
-  matchDetailInfo: {},
+  matchDetailInfo: [],
   spells: {},
   status: "",
   error: null,
@@ -41,14 +41,8 @@ const userSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(getAdditionalMatchDetails.fulfilled, (state, action) => {
-        state.matchInfo = {
-          ...state.matchInfo,
-          ...action.payload.matchInfo,
-        };
-        state.matchDetailInfo = {
-          ...state.matchDetailInfo,
-          ...action.payload.matchDetailInfo,
-        };
+        state.matchInfo = [...state.matchInfo, ...action.payload.matchInfo];
+        state.matchDetailInfo = [...state.matchDetailInfo, ...action.payload.matchDetailInfo];
       });
 
   },

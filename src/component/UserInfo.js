@@ -39,7 +39,7 @@ const UserInfo = () => {
             className="d-flex justify-content-center align-items-center"
           >
             <Image
-              src={`http://ddragon.leagueoflegends.com/cdn/13.24.1/img/profileicon/${userInfo.profileIconId}.png`}
+              src={`http://ddragon.leagueoflegends.com/cdn/14.1.1/img/profileicon/${userInfo.profileIconId}.png`}
               rounded
               style={{
                 width: "120px",

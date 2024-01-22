@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Image } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getUserInfo } from "../redux/actions/userAction";
 
 const PlayerDetail = ({ player, borderColor }) => {
   const spellsInfo = useSelector((state) => state.user.spells);
   const [spell1, setSpell1] = useState("");
   const [spell2, setSpell2] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (player && spellsInfo && spellsInfo.data) {
@@ -19,6 +23,17 @@ const PlayerDetail = ({ player, borderColor }) => {
       });
     }
   }, [spellsInfo, player]);
+
+  const modifiedChampionName =
+    player.championName === "FiddleSticks"
+      ? "Fiddlesticks"
+      : player.championName;
+
+  const handlePlayerClick = () => {
+    dispatch(getUserInfo(player.riotIdGameName));
+    navigate(`/summoner/${player.riotIdGameName}`);
+  };
+
   return (
     <>
       <div
@@ -31,7 +46,7 @@ const PlayerDetail = ({ player, borderColor }) => {
       >
         <div style={{ position: "relative" }}>
           <Image
-            src={`https://ddragon.leagueoflegends.com/cdn/13.24.1/img/champion/${player.championName}.png`}
+            src={`https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${modifiedChampionName}.png`}
             style={{ width: "30px", margin: "5px", marginRight: "5px" }}
           />
           <div
@@ -58,25 +73,30 @@ const PlayerDetail = ({ player, borderColor }) => {
         >
           <div style={{ display: "flex" }}>
             <Image
-              src={`https://ddragon.leagueoflegends.com/cdn/13.24.1/img/spell/${spell1}`}
+              src={`https://ddragon.leagueoflegends.com/cdn/14.1.1/img/spell/${spell1}`}
               style={{ width: "15px", margin: "0.5px", borderRadius: "50%" }}
             />
             <Image
-              src={`https://ddragon.leagueoflegends.com/cdn/13.24.1/img/spell/${spell2}`}
+              src={`https://ddragon.leagueoflegends.com/cdn/14.1.1/img/spell/${spell2}`}
               style={{ width: "15px", margin: "0.5px", borderRadius: "50%" }}
             />
           </div>
         </div>
-        <div style={{ width: "100px" }}>
-          <p style={{ fontSize: "10px", margin: "0 2px" }}>
-            {player.riotIdGameName.length > 9
-              ? player.riotIdGameName.slice(0, 9) + "..."
+        <div
+          style={{ width: "100px", cursor: "pointer" }}
+          onMouseOver={(e) => (e.target.style.textDecoration = "underline")}
+          onMouseOut={(e) => (e.target.style.textDecoration = "none")}
+          onClick={handlePlayerClick}
+        >
+          <p style={{ fontSize: "10px", margin: "0 2px", textAlign: "left" }}>
+            {player.riotIdGameName.length > 10
+              ? player.riotIdGameName.slice(0, 10) + "..."
               : player.riotIdGameName}
           </p>
         </div>
         <div style={{ display: "flex", justifyContent: "space-around" }}>
           {Array.from({ length: 6 }).map((_, index) => {
-            const itemImageUrl = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/item/${
+            const itemImageUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/item/${
               player?.[`item${index}`]
             }.png`;
 

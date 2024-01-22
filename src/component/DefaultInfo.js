@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Card, Image } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { getUserInfo } from "../redux/actions/userAction";
 
 const DefaultInfo = ({
   game,
@@ -13,6 +15,8 @@ const DefaultInfo = ({
   const [spell1, setSpell1] = useState("");
   const [spell2, setSpell2] = useState("");
   const [queueType, setQueueType] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const minionsSectionStyle = {
     width: "280px",
@@ -26,6 +30,10 @@ const DefaultInfo = ({
     const seconds = durationInSeconds % 60;
     return `${minutes}분 ${seconds}초`;
   };
+  const modifiedChampionName =
+    thisGameUser?.championName === "FiddleSticks"
+      ? "Fiddlesticks"
+      : thisGameUser?.championName;
 
   useEffect(() => {
     if (thisGameUser && spellsInfo && spellsInfo.data) {
@@ -41,7 +49,7 @@ const DefaultInfo = ({
   }, [spellsInfo, thisGameUser]);
 
   useEffect(() => {
-    if(game.info.gameDuration <= 180){
+    if (game.info.gameDuration <= 180) {
       setQueueType("다시하기");
     } else if (game.info.queueId === 420) {
       setQueueType("솔로랭크");
@@ -56,6 +64,11 @@ const DefaultInfo = ({
     }
   }, [game]);
 
+  const handlePlayerClick = (name) => {
+    dispatch(getUserInfo(name));
+    navigate(`/summoner/${name}`);
+  };
+
   return (
     <>
       <Card.Title style={{ color: borderColor, fontWeight: "bolder" }}>
@@ -67,7 +80,7 @@ const DefaultInfo = ({
       <div style={{ display: "flex", alignItems: "center", margin: "0 5px" }}>
         <div style={{ position: "relative" }}>
           <Image
-            src={`https://ddragon.leagueoflegends.com/cdn/13.24.1/img/champion/${thisGameUser?.championName}.png`}
+            src={`https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${modifiedChampionName}.png`}
             style={{ width: "90px", margin: "5px" }}
           />
           <div
@@ -91,7 +104,7 @@ const DefaultInfo = ({
         <div style={{ margin: "5px" }}>
           <div>
             <Image
-              src={`https://ddragon.leagueoflegends.com/cdn/13.24.1/img/spell/${spell1}`}
+              src={`https://ddragon.leagueoflegends.com/cdn/14.1.1/img/spell/${spell1}`}
               style={{
                 width: "40px",
                 margin: "0 5px",
@@ -100,7 +113,7 @@ const DefaultInfo = ({
               }}
             />
             <Image
-              src={`https://ddragon.leagueoflegends.com/cdn/13.24.1/img/spell/${spell2}`}
+              src={`https://ddragon.leagueoflegends.com/cdn/14.1.1/img/spell/${spell2}`}
               style={{
                 width: "40px",
                 margin: "5px",
@@ -138,69 +151,86 @@ const DefaultInfo = ({
         </p>
       </div>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
-  {Array.from({ length: 6 }).map((_, index) => {
-    const itemImageUrl = `https://ddragon.leagueoflegends.com/cdn/13.24.1/img/item/${
-      thisGameUser?.[`item${index}`] || 0
-    }.png`;
+        {Array.from({ length: 6 }).map((_, index) => {
+          const itemImageUrl = `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/item/${
+            thisGameUser?.[`item${index}`] || 0
+          }.png`;
 
-    return thisGameUser?.[`item${index}`] === 0 ? (
-      <div
-        key={index}
-        style={{
-          width: "40px",
-          height: "40px",
-          borderRadius: "5px",
-          margin: "3px",
-          backgroundColor: "transparent",
-          border: `1px solid ${borderColor}`,
-        }}
-      ></div>
-    ) : (
-      <img
-        key={index}
-        src={itemImageUrl}
-        alt={`item-${index}`}
-        style={{
-          width: "40px",
-          borderRadius: "5px",
-          margin: "3px",
-          border: "1px solid gray",
-        }}
-      />
-    );
-  })}
-</div>
+          return thisGameUser?.[`item${index}`] === 0 ? (
+            <div
+              key={index}
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "5px",
+                margin: "3px",
+                backgroundColor: "transparent",
+                border: `1px solid ${borderColor}`,
+              }}
+            ></div>
+          ) : (
+            <img
+              key={index}
+              src={itemImageUrl}
+              alt={`item-${index}`}
+              style={{
+                width: "40px",
+                borderRadius: "5px",
+                margin: "3px",
+                border: "1px solid gray",
+              }}
+            />
+          );
+        })}
+      </div>
       <div style={minionsSectionStyle}>
         {[0, 1].map((colIndex) => (
           <div key={colIndex} style={{ width: "150px" }}>
             {game.info.participants
               .slice(colIndex * halfLength, (colIndex + 1) * halfLength)
-              .map((participant, index) => (
-                <div key={index} style={{ display: "flex", margin: "5px 0" }}>
-                  <Image
-                    src={`https://ddragon.leagueoflegends.com/cdn/13.24.1/img/champion/${participant.championName}.png`}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      borderRadius: "5px",
-                      margin: "0 2px",
-                    }}
-                  />
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bolder",
-                      textAlign:"left",
-                      margin: "0 2px",
-                      width: "130px"
-                    }}
-                  >
-                    {participant.riotIdGameName.length > 9
-                      ? participant.riotIdGameName.slice(0, 9) + "..."
-                      : participant.riotIdGameName}
-                  </p>
-                </div>
-              ))}
+              .map((participant, index) => {
+                const modifiedChampionName =
+                  participant.championName === "FiddleSticks"
+                    ? "Fiddlesticks"
+                    : participant.championName;
+
+                return (
+                  <div key={index} style={{ display: "flex", margin: "5px 0" }}>
+                    <Image
+                      src={`https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${modifiedChampionName}.png`}
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "5px",
+                        margin: "0 2px",
+                      }}
+                    />
+                    <p
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bolder",
+                        textAlign: "left",
+                        margin: "0 2px",
+                        width: "130px",
+                        cursor: "pointer",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.textDecoration = "underline")
+                      }
+                      onMouseOut={(e) =>
+                        (e.target.style.textDecoration = "none")
+                      }
+                      onClick={() =>
+                        handlePlayerClick(participant.riotIdGameName)
+                      }
+                    >
+                      {participant.riotIdGameName.length > 9
+                        ? participant.riotIdGameName.slice(0, 9) + "..."
+                        : participant.riotIdGameName}
+                    </p>
+                  </div>
+                );
+              })}
           </div>
         ))}
       </div>

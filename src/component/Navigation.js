@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
+import { InputGroup, FormControl } from "react-bootstrap";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { getUserInfo } from "../redux/actions/userAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
 const Navigation = () => {
@@ -17,6 +18,7 @@ const Navigation = () => {
     if (searchQuery !== "") {
       await dispatch(getUserInfo(searchQuery));
       navigate(`/summoner/${searchQuery}`);
+      setSearchQuery("")
     }
   };
 
@@ -44,19 +46,24 @@ const Navigation = () => {
             style={{ maxHeight: "100px" }}
             navbarScroll
           ></Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-            <Button variant="outline-danger" onClick={handleSearch}>
-              Search
-            </Button>
-          </Form>
+          <div className="ms-auto">
+            <InputGroup>
+              <FormControl
+                placeholder="게임 전적 검색"
+                aria-label="게임 전적 검색"
+                aria-describedby="basic-addon2"
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={handleKeyPress}
+              />
+              <Button
+                variant="outline-secondary"
+                id="button-addon2"
+                onClick={handleSearch}
+              >
+                검색
+              </Button>
+            </InputGroup>
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>
