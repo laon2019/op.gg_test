@@ -5,11 +5,11 @@ export const getUserInfo = createAsyncThunk(
   "summoners",
   async (userNickName, { rejectWithValue }) => {
     const API_KEY = process.env.REACT_APP_API_KEY;
-    console.log(userNickName)
     try {
       const userInfoApi = await api.get(
         `kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${userNickName}?api_key=${API_KEY}`
       );
+      console.log(userInfoApi)
       const leagueInfoApi = await api.get(
         `kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${userInfoApi.data.id}?api_key=${API_KEY}`
       );
@@ -23,7 +23,6 @@ export const getUserInfo = createAsyncThunk(
         );
         return response.data;
       });
-
       const matchDetailInfoApi = await Promise.all(matchDetailPromises);
       const spellsApi = await api.get(
         `ddragon.leagueoflegends.com/cdn/13.24.1/data/ko_KR/summoner.json`
