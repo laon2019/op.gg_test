@@ -9,7 +9,7 @@ export const getUserInfo = createAsyncThunk(
       const userInfoApi = await api.get(
         `kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${userNickName}?api_key=${API_KEY}`
       );
-      console.log(userInfoApi)
+      console.log(await api.get(`https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${userNickName}?api_key=${API_KEY}`))
       const leagueInfoApi = await api.get(
         `kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${userInfoApi.data.id}?api_key=${API_KEY}`
       );
