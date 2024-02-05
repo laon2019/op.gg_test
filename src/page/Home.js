@@ -5,7 +5,6 @@ import { InputGroup, FormControl, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  //테스트
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
