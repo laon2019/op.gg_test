@@ -18,14 +18,6 @@ const UserProfile = () => {
   const matchDetailInfo = useSelector((state) => state.user.matchDetailInfo);
   const spellsInfo = useSelector((state) => state.user.spells);
 
-  useEffect(() => {
-    console.log(userInfo);
-    console.log(leagueInfo);
-    console.log(matchInfo);
-    console.log(matchDetailInfo);
-    console.log(spellsInfo);
-  }, [spellsInfo]);
-
   const handleLoadMore = () => {
     dispatch(
       getAdditionalMatchDetails({
